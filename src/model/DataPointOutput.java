@@ -9,33 +9,23 @@ package model;
  *
  * @author trivm
  */
-public class DataPoint {
+public class DataPointOutput {
     private String Name;
     private String Variations;
-    private float Price;
     private int Star;
     private String Cmt;
+    private int label;
 
-    public DataPoint() {
+    public DataPointOutput() {
     }
 
-    public DataPoint(String Name, String Variations, float Price, int Star, String Cmt) {
+    public DataPointOutput(String Name, String Variations, int Star, String Cmt, int label) {
         this.Name = Name;
         this.Variations = Variations;
-        this.Price = Price;
         this.Star = Star;
         this.Cmt = Cmt;
+        this.label = label;
     }
-
-    public float getPrice() {
-        return Price;
-    }
-
-    public void setPrice(float Price) {
-        this.Price = Price;
-    }
-
-    
 
     public String getName() {
         return Name;
@@ -69,10 +59,12 @@ public class DataPoint {
         this.Cmt = Cmt;
     }
 
-    @Override
-    public String toString() {
-        return "DataPoint{" + "Name=" + Name + ", Variations=" + Variations + ", Price=" + Price + ", Star=" + Star + ", Cmt=" + Cmt + '}';
+    public int getLabel() {
+        return label;
     }
-    
+
+    public void setLabel(int label) {
+        this.label = label;
+    }
     
 }

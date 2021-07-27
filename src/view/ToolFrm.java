@@ -5,6 +5,16 @@
  */
 package view;
 
+import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import model.DataPoint;
+import model.DataPointOutput;
+
 /**
  *
  * @author trivm
@@ -14,8 +24,38 @@ public class ToolFrm extends javax.swing.JFrame {
     /**
      * Creates new form ToolFrm
      */
+    private String filename;
+    private static final String COMMA_DELIMITER = ",";
+    private int row;
+    private int rowshow ;
+    private ArrayList<DataPoint> List = new ArrayList<>() {};
+    private static ToolFrm instance = new ToolFrm();
+
+    public static ToolFrm getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(ToolFrm instance) {
+        ToolFrm.instance = instance;
+    }
+    
+    public int getRowshow() {
+        return rowshow;
+    }
+
+    public void setRowshow(int rowshow) {
+        this.rowshow = rowshow;
+    }
     public ToolFrm() {
         initComponents();
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
     }
 
     /**
@@ -36,11 +76,19 @@ public class ToolFrm extends javax.swing.JFrame {
         lbVariations = new javax.swing.JLabel();
         lbPrice = new javax.swing.JLabel();
         lbStar = new javax.swing.JLabel();
-        txtCmt = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         txtLabel = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        lbDataPointNumber = new javax.swing.JLabel();
+        btnLoadData = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
+        txtpointnumber = new javax.swing.JTextField();
+        btnNextPoint = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtCmt = new javax.swing.JTextArea();
+        btnzoomin = new javax.swing.JButton();
+        btnzoomout = new javax.swing.JButton();
+        btnchosefile = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Add Label Tool");
@@ -63,13 +111,60 @@ public class ToolFrm extends javax.swing.JFrame {
 
         lbStar.setText("...");
 
-        txtCmt.setEditable(false);
-
         jLabel10.setText("Add Label:");
 
         jLabel11.setText("Data Point Number");
 
-        lbDataPointNumber.setText("...");
+        btnLoadData.setText("Load Data");
+        btnLoadData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoadDataActionPerformed(evt);
+            }
+        });
+
+        btnNext.setText("Next");
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
+
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        txtpointnumber.setText("...");
+
+        btnNextPoint.setText("next");
+
+        txtCmt.setColumns(20);
+        txtCmt.setLineWrap(true);
+        txtCmt.setRows(5);
+        jScrollPane2.setViewportView(txtCmt);
+
+        btnzoomin.setText("+");
+        btnzoomin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnzoominActionPerformed(evt);
+            }
+        });
+
+        btnzoomout.setText("-");
+        btnzoomout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnzoomoutActionPerformed(evt);
+            }
+        });
+
+        btnchosefile.setText("Chose File");
+        btnchosefile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnchosefileActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -85,95 +180,223 @@ public class ToolFrm extends javax.swing.JFrame {
                             .addComponent(jLabel4)
                             .addComponent(jLabel3)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(77, 77, 77)
+                            .addComponent(jLabel1)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel11)))
+                .addGap(47, 47, 47)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lbName, javax.swing.GroupLayout.PREFERRED_SIZE, 713, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbVariations, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lbPrice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lbStar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtCmt, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
-                            .addComponent(txtLabel)))
+                            .addComponent(txtLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2))
+                        .addGap(35, 35, 35)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnLoadData, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                            .addComponent(btnzoomin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnzoomout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnchosefile)
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel11)
-                        .addGap(33, 33, 33)
-                        .addComponent(lbDataPointNumber)))
-                .addContainerGap(82, Short.MAX_VALUE))
+                        .addComponent(txtpointnumber, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnNextPoint)
+                        .addGap(209, 209, 209)
+                        .addComponent(btnBack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(48, 48, 48)
+                        .addComponent(btnNext, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(248, 248, 248)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(lbName))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(lbName)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnchosefile)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(lbVariations))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(lbPrice))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(lbVariations))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(lbPrice)))
+                    .addComponent(btnLoadData, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(lbStar))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel5)
-                    .addComponent(txtCmt, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnzoomin)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnzoomout)))
+                .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
                     .addComponent(txtLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(lbDataPointNumber))
-                .addGap(41, 41, 41))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(txtpointnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnNextPoint))
+                        .addGap(32, 32, 32))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(23, 23, 23))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnLoadDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadDataActionPerformed
+        // TODO add your handling code here:
+        //DataPointController.getInstance().LoadCSV();
+        System.err.println(this.filename);
+        String Name = "";
+        String Variations = "";
+        float Price = 0;
+        int Star = 0;
+        String Cmt = "";
+         List = new ArrayList<>() {};
+        BufferedReader br = null;
+        this.rowshow =0;
+        this.row = 0;
+        try {
+            String line;
+            br = new BufferedReader(new FileReader(filename));
+            while ((line = br.readLine()) != null) {  
+                    String[] splitData = line.split(COMMA_DELIMITER);
+                //them 1 dong vao list
+                for (int i = 0; i < splitData.length; i++) {
+                    switch(i){
+                        case 0:
+                            Name = splitData[0];
+                        case 1:
+                            Variations = splitData[1];
+                        case 2:
+                            Price = Float.parseFloat(splitData[2]);
+                        case 3:
+                            Star = Integer.parseInt(splitData[3]);
+                        case 4:
+                            Cmt = splitData[4];
+                    }
+                    System.out.println(row);
+                }
+                DataPoint datapoint = new DataPoint(Name, Variations, Price,Star, Cmt);  
+                List.add(datapoint);
+                row++;
+            }
+ 
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null)
+                    br.close();
+            } catch (IOException crunchifyException) {
+                crunchifyException.printStackTrace();
+            }
+        }
+        System.err.println("show: " + this.rowshow);
+        lbName.setText(List.get(rowshow).getName());
+        lbVariations.setText(List.get(rowshow).getVariations());
+        lbPrice.setText(""+List.get(rowshow).getPrice()+"");
+        lbStar.setText(""+List.get(rowshow).getStar()+"");
+        txtCmt.setText(List.get(rowshow).getCmt());
+      
+        
+    }//GEN-LAST:event_btnLoadDataActionPerformed
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        // TODO add your handling code here:
+        rowshow++;
+        try {
+            lbName.setText(List.get(rowshow).getName());
+            lbVariations.setText(List.get(rowshow).getVariations());
+            lbPrice.setText(""+List.get(rowshow).getPrice()+"");
+            lbStar.setText(""+List.get(rowshow).getStar()+"");
+            txtCmt.setText(List.get(rowshow).getCmt());
+            txtpointnumber.setText(""+rowshow+"");
+        } catch (Exception e) {
+            rowshow--;
+            JOptionPane.showMessageDialog(rootPane, "That bai vi day la datapoint cuoi cung");
+            txtpointnumber.setText(""+rowshow+"");
+        }
+    }//GEN-LAST:event_btnNextActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        rowshow--;
+        try {
+          
+            lbName.setText(List.get(rowshow).getName());
+            lbVariations.setText(List.get(rowshow).getVariations());
+            lbPrice.setText(""+List.get(rowshow).getPrice()+"");
+            lbStar.setText(""+List.get(rowshow).getStar()+"");
+            txtCmt.setText(List.get(rowshow).getCmt());
+            txtpointnumber.setText(""+rowshow+"");
+        } catch (Exception e) {
+            rowshow++;
+            JOptionPane.showMessageDialog(rootPane, "That bai vi day la datapoint dau tien");
+            txtpointnumber.setText(""+rowshow+"");
+        }
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnzoominActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnzoominActionPerformed
+        // TODO add your handling code here:
+        Font f = txtCmt.getFont();
+        txtCmt.setFont(new Font(f.getFamily(), f.getStyle(), f.getSize()+1));
+    }//GEN-LAST:event_btnzoominActionPerformed
+
+    private void btnzoomoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnzoomoutActionPerformed
+        // TODO add your handling code here:
+        Font f = txtCmt.getFont();
+        if(f.getSize() >= 12){
+            txtCmt.setFont(new Font(f.getFamily(), f.getStyle(), f.getSize()-1));
+        }
+        
+    }//GEN-LAST:event_btnzoomoutActionPerformed
+
+    private void btnchosefileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnchosefileActionPerformed
+        // TODO add your handling code here:
+        FileChoser.getInstance().setVisible(true);
+        this.filename=FileChoser.getInstance().getjFileChooser().getSelectedFile().getAbsolutePath();
+    }//GEN-LAST:event_btnchosefileActionPerformed
+
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(ToolFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(ToolFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(ToolFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(ToolFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new ToolFrm().setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnLoadData;
+    private javax.swing.JButton btnNext;
+    private javax.swing.JButton btnNextPoint;
+    private javax.swing.JButton btnchosefile;
+    private javax.swing.JButton btnzoomin;
+    private javax.swing.JButton btnzoomout;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -181,12 +404,17 @@ public class ToolFrm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel lbDataPointNumber;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbName;
     private javax.swing.JLabel lbPrice;
     private javax.swing.JLabel lbStar;
     private javax.swing.JLabel lbVariations;
-    private javax.swing.JTextField txtCmt;
+    private javax.swing.JTextArea txtCmt;
     private javax.swing.JTextField txtLabel;
+    private javax.swing.JTextField txtpointnumber;
     // End of variables declaration//GEN-END:variables
+
+    void setFileName(String name) {
+        this.filename = name;
+    }
 }

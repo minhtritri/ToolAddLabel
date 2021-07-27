@@ -18,11 +18,10 @@ public class main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        ToolFrm tool = new ToolFrm();
-        tool.setVisible(true);
-        tool.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        System.out.println("hello world");
+         //TODO code application logic here
+        ToolFrm.getInstance().setVisible(true);    
+        ToolFrm.getInstance().setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
     }
-    
+//    
 }
