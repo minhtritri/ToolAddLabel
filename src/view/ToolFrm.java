@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -285,7 +286,7 @@ public class ToolFrm extends javax.swing.JFrame {
         this.row = 0;
         try {
             String line;
-            br = new BufferedReader(new FileReader(filename));
+            br = new BufferedReader(new FileReader(filename, StandardCharsets.UTF_8));
             while ((line = br.readLine()) != null) {  
                     String[] splitData = line.split(COMMA_DELIMITER);
                 //them 1 dong vao list
